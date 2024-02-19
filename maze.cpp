@@ -1,9 +1,13 @@
-#include "maze.h"
-#include <ctime>
 #include <algorithm>
+#include <ctime>
+
+#include "maze.h"
 
 Maze::Maze(const int &width, const int &height)
-    : width(width), height(height), grid(new unsigned char[width * height]{0}) {
+    : width(width),
+      height(height),
+      num_cells(width * height),
+      grid(new unsigned char[width * height]{0}) {
     srand(clock());
     generate(rand() % width, rand() % height);
 }
