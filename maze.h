@@ -1,26 +1,28 @@
 #pragma once
 
+#include <unordered_map>
+
 class Maze {
    private:
     unsigned char *const grid;
     const int width;
     const int height;
-    const int num_cells;
 
     enum Direction : unsigned char {
-        N = 0x31,
-        E = 0x42,
-        S = 0x14,
-        W = 0xC8,
+        N = 0x01,
+        E = 0x02,
+        S = 0x04,
+        W = 0x08,
+    };
+
+    const std::unordered_map<Direction, const std::pair<int, int>> coordinates = {
+        {N, {0, -1}},
+        {E, {1, 0}},
+        {S, {0, 1}},
+        {W, {-1, 0}}
     };
 
    private:
-    inline int offset(const int &x, const int &y) { return y * width + x; }
-
-    inline bool isValidIndex(const int &x, const int &y) {
-        return x > -1 && x < width && y > -1 && y < height;
-    }
-
     void generate(const int &x, const int &y);
 
    public:
