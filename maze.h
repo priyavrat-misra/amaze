@@ -1,12 +1,11 @@
 #pragma once
 
-#include <unordered_map>
-
 class Maze {
    private:
     unsigned char *const grid;
     const int width;
     const int height;
+    const int n_cells;
 
     enum Direction : unsigned char {
         N = 0x01,
@@ -15,15 +14,8 @@ class Maze {
         W = 0x08,
     };
 
-    const std::unordered_map<Direction, const std::pair<int, int>> coordinates = {
-        {N, {0, -1}},
-        {E, {1, 0}},
-        {S, {0, 1}},
-        {W, {-1, 0}}
-    };
-
    private:
-    void generate(const int &x, const int &y);
+    void generate(const int &i);
 
    public:
     Maze(const int &width, const int &height);

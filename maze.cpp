@@ -5,63 +5,52 @@
 
 #include "maze.h"
 
-std::pair<int, int> operator+(const std::pair<int, int> &x,
-                              const std::pair<int, int> &y) {
-    return std::make_pair(x.first + y.first, x.second + y.second);
-}
-
 Maze::Maze(const int &width, const int &height)
-    : grid(new unsigned char[width * height]{0}), width(width), height(height) {
+    : grid(new unsigned char[width * height]{0}),
+      width(width),
+      height(height),
+      n_cells(width * height) {
     srand(clock());
-    generate(rand() % width, rand() % height);
+    generate(rand() % n_cells);
 }
 
 Maze::~Maze() { delete[] grid; }
 
-void Maze::generate(const int &x, const int &y) {
-    std::stack<std::pair<int, int>> cell_stack;
-    cell_stack.push({x, y});
-    int n_cells = width * height;
+void Maze::generate(const int &i) {
+    std::stack<int> cell_stack;
+    cell_stack.push(i);
     int n_visited = 1;
 
-    auto offset = [&cell_stack, this](const auto &coordinate) {
-        return (cell_stack.top().second + coordinate.second) * width +
-               (cell_stack.top().first + coordinate.first);
-    };
-
-    while (n_visited < n_cells) {
-        const auto &[xt, yt] = cell_stack.top();
+    while (!cell_stack.empty()) {
+        const int &t = cell_stack.top();
         std::vector<Direction> next_direction;
-        if (yt > 0 && !offset(coordinates.at(N)))
+
+        if (t >= width && !grid[t - width])
             next_direction.push_back(N);
-        if (xt < width - 1 && !offset(coordinates.at(E)))
+        if (t % width < width - 1 && !grid[t + 1])
             next_direction.push_back(E);
-        if (yt < height - 1 && !offset(coordinates.at(S)))
+        if (t / width < height - 1 && !grid[t + width])
             next_direction.push_back(S);
-        if (x > 0 && !offset(coordinates.at(W)))
+        if (t % width && !grid[t - 1])
             next_direction.push_back(W);
 
         if (!next_direction.empty()) {
             switch (next_direction[rand() % next_direction.size()]) {
                 case N:
-                    grid[offset(std::make_pair(0, 0))] |= N;
-                    grid[offset(coordinates.at(N))] |= S;
-                    cell_stack.push(cell_stack.top() + coordinates.at(N));
+                    grid[t] |= N;
+                    cell_stack.push(grid[t - width] |= S);
                     break;
                 case E:
-                    grid[offset(std::make_pair(0, 0))] |= E;
-                    grid[offset(coordinates.at(E))] |= W;
-                    cell_stack.push(cell_stack.top() + coordinates.at(E));
+                    grid[t] |= E;
+                    cell_stack.push(grid[t + 1] |= W);
                     break;
                 case S:
-                    grid[offset(std::make_pair(0, 0))] |= S;
-                    grid[offset(coordinates.at(S))] |= N;
-                    cell_stack.push(cell_stack.top() + coordinates.at(S));
+                    grid[t] |= S;
+                    cell_stack.push(grid[t + width] |= N);
                     break;
                 case W:
-                    grid[offset(std::make_pair(0, 0))] |= W;
-                    grid[offset(coordinates.at(W))] |= E;
-                    cell_stack.push(cell_stack.top() + coordinates.at(W));
+                    grid[t] |= W;
+                    cell_stack.push(grid[t - 1] |= E);
                     break;
             }
             ++n_visited;
