@@ -21,7 +21,7 @@ void Maze::generate(const int &i) {
     cell_stack.push(i);
     int n_visited = 1;
 
-    while (!cell_stack.empty()) {
+    while (n_visited < n_cells) {
         const int &t = cell_stack.top();
         std::vector<Direction> next_direction;
 
@@ -38,19 +38,23 @@ void Maze::generate(const int &i) {
             switch (next_direction[rand() % next_direction.size()]) {
                 case N:
                     grid[t] |= N;
-                    cell_stack.push(grid[t - width] |= S);
+                    grid[t - width] |= S;
+                    cell_stack.push(t - width);
                     break;
                 case E:
                     grid[t] |= E;
-                    cell_stack.push(grid[t + 1] |= W);
+                    grid[t + 1] |= W;
+                    cell_stack.push(t + 1);
                     break;
                 case S:
                     grid[t] |= S;
-                    cell_stack.push(grid[t + width] |= N);
+                    grid[t + width] |= N;
+                    cell_stack.push(t + width);
                     break;
                 case W:
                     grid[t] |= W;
-                    cell_stack.push(grid[t - 1] |= E);
+                    grid[t - 1] |= E;
+                    cell_stack.push(t - 1);
                     break;
             }
             ++n_visited;
