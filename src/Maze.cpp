@@ -2,7 +2,7 @@
 #include <ctime>
 #include <vector>
 
-#include <Direction.h>
+#include "Direction.h"
 #include "Maze.h"
 
 Maze::Maze(const int &width, const int &height)
