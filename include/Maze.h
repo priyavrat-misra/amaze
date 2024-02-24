@@ -1,5 +1,7 @@
 #pragma once
 
+#include <stack>
+
 class Maze {
    private:
     unsigned char *const grid;
@@ -7,15 +9,11 @@ class Maze {
     const int height;
     const int n_cells;
 
-    enum Direction : unsigned char {
-        N = 0x01,
-        E = 0x02,
-        S = 0x04,
-        W = 0x08,
-    };
+    std::stack<int> cell_stack;
+    int n_visited;
 
    private:
-    void generate(const int &i);
+    void generate();
 
    public:
     Maze(const int &width, const int &height);

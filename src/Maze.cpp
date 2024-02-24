@@ -1,9 +1,9 @@
 #include <cstdlib>
 #include <ctime>
-#include <stack>
 #include <vector>
 
-#include "maze.h"
+#include <Direction.h>
+#include "Maze.h"
 
 Maze::Maze(const int &width, const int &height)
     : grid(new unsigned char[width * height]{0}),
@@ -11,17 +11,14 @@ Maze::Maze(const int &width, const int &height)
       height(height),
       n_cells(width * height) {
     srand(clock());
-    generate(rand() % n_cells);
+    cell_stack.push(rand() % n_cells);
+    n_visited = 1;
 }
 
 Maze::~Maze() { delete[] grid; }
 
-void Maze::generate(const int &i) {
-    std::stack<int> cell_stack;
-    cell_stack.push(i);
-    int n_visited = 1;
-
-    while (n_visited < n_cells) {
+void Maze::generate() {
+    if (n_visited < n_cells) {
         const int &t = cell_stack.top();
         std::vector<Direction> next_direction;
 
