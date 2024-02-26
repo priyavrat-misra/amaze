@@ -4,11 +4,15 @@
 
 #include "Maze.hpp"
 
+#define XY(DX, DY)                                       \
+    (t % width) * GRID_CELL_WIDTH + PATH_THICKNESS + DX, \
+        (t / width) * GRID_CELL_HEIGHT + PATH_THICKNESS + DY
+#define GRID_CELL_WIDTH (CELL_WIDTH + 2 * PATH_THICKNESS)
+#define GRID_CELL_HEIGHT (CELL_HEIGHT + 2 * PATH_THICKNESS)
+
 #define CELL_WIDTH 30
 #define CELL_HEIGHT 30
 #define PATH_THICKNESS 5
-#define GRID_CELL_WIDTH 40
-#define GRID_CELL_HEIGHT 40
 
 Maze::Maze(const int &window_width, const int &window_height)
     : width(window_width / GRID_CELL_WIDTH),
@@ -33,8 +37,7 @@ void Maze::step(sf::RenderWindow &window) {
     const int &t = cell_stack.top();
     std::vector<Direction> next_direction;
 
-    cell.setPosition((t % width) * GRID_CELL_WIDTH + PATH_THICKNESS,
-                     (t / width) * GRID_CELL_HEIGHT + PATH_THICKNESS);
+    cell.setPosition(XY(0, 0));
     window.draw(cell);
 
     if (t >= width && !grid[t - width]) next_direction.push_back(N);
@@ -46,37 +49,28 @@ void Maze::step(sf::RenderWindow &window) {
         switch (next_direction[rand() % next_direction.size()]) {
             case N:
                 grid[t] |= N;
-                verticalPath.setPosition(
-                    (t % width) * GRID_CELL_WIDTH + PATH_THICKNESS,
-                    (t / width) * GRID_CELL_HEIGHT);
+                verticalPath.setPosition(XY(0, -PATH_THICKNESS));
                 window.draw(verticalPath);
                 grid[t - width] |= S;
                 cell_stack.push(t - width);
                 break;
             case E:
                 grid[t] |= E;
-                horizontalPath.setPosition(
-                    (t % width) * GRID_CELL_WIDTH + PATH_THICKNESS + CELL_WIDTH,
-                    (t / width) * GRID_CELL_HEIGHT + PATH_THICKNESS);
+                horizontalPath.setPosition(XY(CELL_WIDTH, 0));
                 window.draw(horizontalPath);
                 grid[t + 1] |= W;
                 cell_stack.push(t + 1);
                 break;
             case S:
                 grid[t] |= S;
-                verticalPath.setPosition(
-                    (t % width) * GRID_CELL_WIDTH + PATH_THICKNESS,
-                    (t / width) * GRID_CELL_HEIGHT + PATH_THICKNESS +
-                        CELL_HEIGHT);
+                verticalPath.setPosition(XY(0, CELL_HEIGHT));
                 window.draw(verticalPath);
                 grid[t + width] |= N;
                 cell_stack.push(t + width);
                 break;
             case W:
                 grid[t] |= W;
-                horizontalPath.setPosition(
-                    (t % width) * GRID_CELL_WIDTH,
-                    (t / width) * GRID_CELL_HEIGHT + PATH_THICKNESS);
+                horizontalPath.setPosition(XY(-PATH_THICKNESS, 0));
                 window.draw(horizontalPath);
                 grid[t - 1] |= E;
                 cell_stack.push(t - 1);
