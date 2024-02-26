@@ -21,5 +21,8 @@ class Maze {
     Maze(const int &width, const int &height);
     ~Maze();
 
+    bool isComplete();
     void step(sf::RenderWindow &window);
 };
+
+inline bool Maze::isComplete() { return n_visited == n_cells; }
