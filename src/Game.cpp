@@ -1,4 +1,4 @@
-#include "Game.h"
+#include "Game.hpp"
 
 Game::Game()
     : window(sf::VideoMode::getDesktopMode(), "Amaze", sf::Style::Fullscreen),

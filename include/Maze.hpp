@@ -17,6 +17,13 @@ class Maze {
     sf::RectangleShape horizontalPath;
     sf::RectangleShape verticalPath;
 
+    enum Direction : unsigned char {
+        N = 0x01,
+        E = 0x02,
+        S = 0x04,
+        W = 0x08,
+    };
+
    public:
     Maze(const int &width, const int &height);
     ~Maze();

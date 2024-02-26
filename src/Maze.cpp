@@ -2,8 +2,7 @@
 #include <ctime>
 #include <vector>
 
-#include "Direction.h"
-#include "Maze.h"
+#include "Maze.hpp"
 
 #define CELL_WIDTH 30
 #define CELL_HEIGHT 30

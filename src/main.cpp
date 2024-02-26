@@ -1,6 +1,6 @@
 #include <cstdlib>
 
-#include "Game.h"
+#include "Game.hpp"
 
 int main() {
     Game game;

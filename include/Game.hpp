@@ -2,8 +2,7 @@
 
 #include <SFML/Graphics.hpp>
 
-#include "Direction.h"
-#include "Maze.h"
+#include "Maze.hpp"
 
 class Game {
    private:
