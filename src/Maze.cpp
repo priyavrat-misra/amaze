@@ -2,30 +2,15 @@
 #include <ctime>
 #include <vector>
 
+#include "Direction.hpp"
 #include "Maze.hpp"
 
-#define XY(DX, DY)                                       \
-    (t % width) * GRID_CELL_WIDTH + PATH_THICKNESS + DX, \
-        (t / width) * GRID_CELL_HEIGHT + PATH_THICKNESS + DY
-#define GRID_CELL_WIDTH (CELL_WIDTH + 2 * PATH_THICKNESS)
-#define GRID_CELL_HEIGHT (CELL_HEIGHT + 2 * PATH_THICKNESS)
-
-#define CELL_WIDTH 30
-#define CELL_HEIGHT 30
-#define PATH_THICKNESS 5
-
-Maze::Maze(const int &window_width, const int &window_height)
-    : width(window_width / GRID_CELL_WIDTH),
-      height(window_height / GRID_CELL_HEIGHT),
+Maze::Maze(int width, int height, Renderer &renderer)
+    : width(width),
+      height(height),
       n_cells(width * height),
       grid(new unsigned char[n_cells]{0}),
-      cell(sf::Vector2f(CELL_WIDTH, CELL_HEIGHT)),
-      horizontalPath(sf::Vector2f(PATH_THICKNESS, CELL_HEIGHT)),
-      verticalPath(sf::Vector2f(CELL_WIDTH, PATH_THICKNESS)) {
-    cell.setFillColor(sf::Color::White);
-    horizontalPath.setFillColor(sf::Color::White);
-    verticalPath.setFillColor(sf::Color::White);
-
+      renderer(renderer) {
     srand(clock());
     cell_stack.push(rand() % n_cells);
     n_visited = 1;
@@ -33,51 +18,40 @@ Maze::Maze(const int &window_width, const int &window_height)
 
 Maze::~Maze() { delete[] grid; }
 
-void Maze::step(sf::RenderWindow &window) {
+void Maze::step() {
     const int &t = cell_stack.top();
-    std::vector<Direction> next_direction;
+    std::vector<Direction> next_directions;
 
-    cell.setPosition(XY(0, 0));
-    window.draw(cell);
+    if (t >= width && !grid[t - width]) next_directions.push_back(N);
+    if (t % width < width - 1 && !grid[t + 1]) next_directions.push_back(E);
+    if (t / width < height - 1 && !grid[t + width]) next_directions.push_back(S);
+    if (t % width && !grid[t - 1]) next_directions.push_back(W);
 
-    if (t >= width && !grid[t - width]) next_direction.push_back(N);
-    if (t % width < width - 1 && !grid[t + 1]) next_direction.push_back(E);
-    if (t / width < height - 1 && !grid[t + width]) next_direction.push_back(S);
-    if (t % width && !grid[t - 1]) next_direction.push_back(W);
-
-    if (!next_direction.empty()) {
-        switch (next_direction[rand() % next_direction.size()]) {
+    if (!next_directions.empty()) {
+        Direction &next_direction = next_directions[rand() % next_directions.size()];
+        grid[t] |= next_direction;
+        renderer.drawPath(t % width, t / width, next_direction);
+        switch (next_direction) {
             case N:
-                grid[t] |= N;
-                verticalPath.setPosition(XY(0, -PATH_THICKNESS));
-                window.draw(verticalPath);
                 grid[t - width] |= S;
                 cell_stack.push(t - width);
                 break;
             case E:
-                grid[t] |= E;
-                horizontalPath.setPosition(XY(CELL_WIDTH, 0));
-                window.draw(horizontalPath);
                 grid[t + 1] |= W;
                 cell_stack.push(t + 1);
                 break;
             case S:
-                grid[t] |= S;
-                verticalPath.setPosition(XY(0, CELL_HEIGHT));
-                window.draw(verticalPath);
                 grid[t + width] |= N;
                 cell_stack.push(t + width);
                 break;
             case W:
-                grid[t] |= W;
-                horizontalPath.setPosition(XY(-PATH_THICKNESS, 0));
-                window.draw(horizontalPath);
                 grid[t - 1] |= E;
                 cell_stack.push(t - 1);
                 break;
         }
         ++n_visited;
     } else {
+        renderer.drawCell(t % width, t / width);
         cell_stack.pop();
     }
 }

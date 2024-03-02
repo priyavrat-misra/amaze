@@ -1,9 +1,12 @@
 #include "Game.hpp"
 
+#define SCALE 10
+
 Game::Game()
-    : window(sf::VideoMode::getDesktopMode(), "Amaze", sf::Style::Fullscreen),
-      maze(window.getSize().x, window.getSize().y) {
-    window.setFramerateLimit(16); 
+    : window(sf::VideoMode(1280, 720), "Amaze", sf::Style::Close),
+      renderer(window, SCALE),
+      maze(window.getSize().x / SCALE, window.getSize().y / SCALE, renderer) {
+    window.setFramerateLimit(120); 
     window.setActive(true);
 }
 
@@ -20,7 +23,7 @@ void Game::loop() {
             }
         }
         if (!maze.isComplete()) {
-            maze.step(window);
+            maze.step();
             window.display();
         }
     }
