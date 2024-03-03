@@ -13,7 +13,6 @@ class Maze {
     Renderer &renderer;
 
     std::stack<int> cell_stack;
-    int n_visited;
 
    public:
     Maze(int width, int height, Renderer &renderer);

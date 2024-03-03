@@ -13,7 +13,7 @@ Renderer::Renderer(sf::RenderWindow &window, int scale)
       vPath(DIM(CELL_THICKNESS, 2 * PATH_THICKNESS)) {}
 
 void Renderer::drawCell(int x, int y) {
-    cell.setPosition(scale * (x + PATH_THICKNESS), scale * (y + PATH_THICKNESS));
+    cell.setPosition(POS(PATH_THICKNESS, PATH_THICKNESS));
     window.draw(cell);
 }
 

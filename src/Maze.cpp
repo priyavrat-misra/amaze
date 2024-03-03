@@ -13,7 +13,6 @@ Maze::Maze(int width, int height, Renderer &renderer)
       renderer(renderer) {
     srand(clock());
     cell_stack.push(rand() % n_cells);
-    n_visited = 1;
 }
 
 Maze::~Maze() { delete[] grid; }
@@ -49,7 +48,6 @@ void Maze::step() {
                 cell_stack.push(t - 1);
                 break;
         }
-        ++n_visited;
     } else {
         renderer.drawCell(t % width, t / width);
         cell_stack.pop();
