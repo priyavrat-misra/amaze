@@ -1,19 +1,36 @@
 # -*- MakeFile -*-
 
-amaze: main.o Maze.o Renderer.o Game.o
-	g++ main.o Maze.o Renderer.o Game.o -o amaze -lsfml-system -lsfml-window -lsfml-graphics
+CXX=g++
+INC_DIR=include
+SRC_DIR=src
+OBJ_DIR=build
+OPT=-O2
+CXXFLAGS=-c -Wall -Wextra -I$(INC_DIR) $(OPT) -o $@
+LIBS=-lsfml-system -lsfml-window -lsfml-graphics
+TARGET=amaze
 
-main.o: src/main.cpp include/Game.hpp
-	g++ -c -O2 -I include/ src/main.cpp
+all: $(OBJ_DIR) $(TARGET)
 
-Maze.o: src/Maze.cpp include/Maze.hpp include/Renderer.hpp include/Direction.hpp
-	g++ -c -O2 -I include/ src/Maze.cpp
+$(OBJ_DIR):
+	@mkdir -p $@
 
-Renderer.o: src/Renderer.cpp include/Renderer.hpp include/Direction.hpp
-	g++ -c -O2 -I include/ src/Renderer.cpp
+$(TARGET): $(OBJ_DIR)/main.o $(OBJ_DIR)/Maze.o $(OBJ_DIR)/Renderer.o $(OBJ_DIR)/Game.o
+	$(CXX) $^ -o $@ $(LIBS)
+	@strip --strip-unneeded $(TARGET)
 
-Game.o: src/Game.cpp include/Game.hpp include/Maze.hpp include/Renderer.hpp
-	g++ -c -O2 -I include/ src/Game.cpp
+$(OBJ_DIR)/main.o: $(SRC_DIR)/main.cpp $(INC_DIR)/Game.hpp
+	$(CXX) $(CXXFLAGS) $(SRC_DIR)/main.cpp
+
+$(OBJ_DIR)/Maze.o: $(SRC_DIR)/Maze.cpp $(INC_DIR)/Maze.hpp $(INC_DIR)/Renderer.hpp $(INC_DIR)/Direction.hpp
+	$(CXX) $(CXXFLAGS) $(SRC_DIR)/Maze.cpp
+
+$(OBJ_DIR)/Renderer.o: $(SRC_DIR)/Renderer.cpp $(INC_DIR)/Renderer.hpp $(INC_DIR)/Direction.hpp
+	$(CXX) $(CXXFLAGS) $(SRC_DIR)/Renderer.cpp
+
+$(OBJ_DIR)/Game.o: $(SRC_DIR)/Game.cpp $(INC_DIR)/Game.hpp $(INC_DIR)/Maze.hpp $(INC_DIR)/Renderer.hpp
+	$(CXX) $(CXXFLAGS) $(SRC_DIR)/Game.cpp
 
 clean:
-	rm *.o amaze
+	rm -rf $(OBJ_DIR) $(TARGET)
+
+remake: clean all
