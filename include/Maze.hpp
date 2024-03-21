@@ -2,24 +2,23 @@
 
 #include <stack>
 
-#include "Renderer.hpp"
+class Game;
 
 class Maze {
    private:
     const int width;
     const int height;
-    const int n_cells;
     unsigned char *const grid;
-    Renderer &renderer;
+    Game *const game;
 
     std::stack<int> cell_stack;
 
    public:
-    Maze(int width, int height, Renderer &renderer);
+    Maze(int width, int height, Game *const game);
     ~Maze();
 
-    bool isComplete();
+    bool isComplete() const;
     void step();
 };
 
-inline bool Maze::isComplete() { return cell_stack.empty(); }
+inline bool Maze::isComplete() const { return cell_stack.empty(); }
